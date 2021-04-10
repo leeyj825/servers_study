@@ -21,7 +21,7 @@ public class Controller {
 
         responseEntity = new ResponseEntity<>("OK", HttpStatus.OK);
 
-        Logger logger = LoggerFactory.getLogger("kr.ac.jbnu.ampm.leeyj");
+        Logger logger = LoggerFactory.getLogger("kr.ac.jbnu.ampm.leeyj.Controller");
         logger.info("log");
         return responseEntity;
     }
