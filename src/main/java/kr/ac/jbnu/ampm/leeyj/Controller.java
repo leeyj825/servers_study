@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
+import sun.awt.image.ImageWatched;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -25,17 +26,16 @@ public class Controller {
             voMap = new HashMap<String, Object>();
 
             voMap.put("books", new LinkedHashMap<String, Object>() {{ //linked hashmap : 순서 보장.
-
                 put("book3", new HashMap<String , Object>(){{
                     put("name", "디지털공학개론");
-                }});
+                }}); //1
 
             put("book2", "소프트웨어공학개론");
             put("book1", "마션");
-            }});
-
-            voMap.put("name", "이유정");
-            voMap.put("age", 22);
+            }}); //2
+            
+            voMap.put("name", "이유정"); //3
+            voMap.put("age", 22); //4
 
             responseEntity = new ResponseEntity<>(voMap, HttpStatus.OK);
         }
