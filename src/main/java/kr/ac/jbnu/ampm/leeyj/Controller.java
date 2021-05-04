@@ -38,8 +38,6 @@ public class Controller {
             voMap.put("age", 22);
 
             responseEntity = new ResponseEntity<>(voMap, HttpStatus.OK);
-
-
         }
         else{
 
