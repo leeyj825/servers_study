@@ -26,6 +26,7 @@ public class Controller {
             voMap = new HashMap<String, Object>();
 
             voMap.put("books", new LinkedHashMap<String, Object>() {{ //linked hashmap : 순서 보장.
+
                 put("book3", new HashMap<String , Object>(){{
                     put("name", "디지털공학개론");
                 }}); //1
@@ -33,7 +34,7 @@ public class Controller {
             put("book2", "소프트웨어공학개론");
             put("book1", "마션");
             }}); //2
-            
+
             voMap.put("name", "이유정"); //3
             voMap.put("age", 22); //4
 
