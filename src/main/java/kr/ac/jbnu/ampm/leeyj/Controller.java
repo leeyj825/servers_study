@@ -91,7 +91,7 @@ public class Controller {
     public ResponseEntity<?> deleteResponseEntity(HttpServletRequest request, @PathVariable String id){
         ResponseEntity<?> responseEntity = null;
 
-        if(id!=null && id.equals("")){
+        if(id!=null && !id.equals("")){
             if(testDBHashMap.containsKey(id)){ //가지고 있을때만 작동해야함.
                 testDBHashMap.remove(id);
                 responseEntity = new ResponseEntity<>("", HttpStatus.OK); //빈 값으로 전달.
@@ -101,7 +101,7 @@ public class Controller {
             }
         }
         else{
-
+            responseEntity = new ResponseEntity<>("NOT_CONTAIN", HttpStatus.BAD_REQUEST);
         }
 
         return responseEntity;
