@@ -1,6 +1,7 @@
 package kr.ac.jbnu.ampm.leeyj;
 
 
+import com.sun.applet2.AppletParameters;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +10,7 @@ import org.slf4j.Logger;
 import sun.awt.image.ImageWatched;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class Controller {
@@ -40,7 +38,7 @@ public class Controller {
         ResponseEntity<?> responseEntity = null;
 
         if(!testDBHashMap.isEmpty()){ //비어있지 않을때
-            if(id != null && id.equals("") && testDBHashMap.containsKey((id))){
+            if(id != null && !id.equals("") && testDBHashMap.containsKey(id)){
                 responseEntity = new ResponseEntity<>(testDBHashMap.get(id), HttpStatus.OK);
             }
             else{
@@ -53,6 +51,7 @@ public class Controller {
 
         return responseEntity;
     }
+
     @RequestMapping(value = "/post/{id}", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public ResponseEntity<?> postResponseEntity(HttpServletRequest request, @PathVariable String id, @RequestBody Map<String, Object> requestMap){
@@ -60,24 +59,23 @@ public class Controller {
         ArrayList<Map<String, Object>> postValueArrayList = null;  //데이터 받아서 임시로 두고 대체하는 용도
 
         if (id != null && !id.equals("")){
-            if(testDBHashMap.containsKey((id))){
+            if(testDBHashMap.containsKey(id)){ //키가 존재하는 경우.
                 postValueArrayList = testDBHashMap.get(id);
             }
-            else{
+            else{ //동일한 키가 존재하지 않는 경우.
                 postValueArrayList = new ArrayList<Map<String, Object>>();
             }
 
             postValueArrayList.add(requestMap);
 
-            if(testDBHashMap.containsKey(id)){
+            if(testDBHashMap.containsKey(id)){ //아이디가 존재하면 수정.
                 testDBHashMap.replace(id, postValueArrayList);
             }
-            else{
+            else{ //존재하지 않으면 새로운 데이터로 추가.
                 testDBHashMap.put(id, postValueArrayList);
             }
 
             responseEntity = new ResponseEntity<>(requestMap, HttpStatus.OK);
-
         }
         else{
             responseEntity = new ResponseEntity<>("NOT_CONTAIN", HttpStatus.BAD_REQUEST);
@@ -92,16 +90,51 @@ public class Controller {
         ResponseEntity<?> responseEntity = null;
 
         if(id!=null && !id.equals("")){
-            if(testDBHashMap.containsKey(id)){ //가지고 있을때만 작동해야함.
+            if(testDBHashMap.containsKey(id)){ //키가 존재하는 경우.
                 testDBHashMap.remove(id);
-                responseEntity = new ResponseEntity<>("", HttpStatus.OK); //빈 값으로 전달.
+                responseEntity = new ResponseEntity<>("", HttpStatus.OK);
             }
-            else{
-                responseEntity = new ResponseEntity<>("NOT_FOUND", HttpStatus.BAD_REQUEST);
+            else{ //키가 없는 경우.
+                responseEntity = new ResponseEntity<>("NOT_CONTAIN", HttpStatus.BAD_REQUEST);
             }
         }
         else{
-            responseEntity = new ResponseEntity<>("NOT_CONTAIN", HttpStatus.BAD_REQUEST);
+            responseEntity = new ResponseEntity<>("BAD_REQUEST", HttpStatus.BAD_REQUEST);
+        }
+
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/put/{id}", method = RequestMethod.PUT, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> putResponseEntity(HttpServletRequest request, @PathVariable String id, @RequestBody Map<String, Object> requestMap) {
+        ResponseEntity<?> responseEntity = null;
+        ArrayList<Map<String, Object>> putValueArrayList = null;
+
+        if (!testDBHashMap.isEmpty()) { //DB가 비어있지 않은 경우
+            if (id != null && !id.equals("") && testDBHashMap.containsKey(id)) { //id를 입력했고 해당 id가 존재할때.
+                for (String newKey : requestMap.keySet()) {
+                    for (String i : testDBHashMap.keySet()) {
+                            for (String cmp : testDBHashMap.get(i).get(0).keySet()) { //DB의 MAP의 키값.
+                                if (newKey.equals((String) cmp)) {
+                                    postResponseEntity(request, id, requestMap);
+                                    responseEntity = new ResponseEntity<>(requestMap, HttpStatus.OK);
+                                    break;
+                                }
+                                break;
+                            }
+                        break;
+                    }
+                    break;
+                }
+            }
+            else { //널 값이나 공백을 입력했을 때. id가 존재하지 않을 때.
+                responseEntity = new ResponseEntity<>("NOT_FOUND", HttpStatus.NOT_FOUND);
+            }
+        }
+
+        else{ //DB가 비어있는 경우.
+            responseEntity = new ResponseEntity<>("BAD_REQUEST", HttpStatus.BAD_REQUEST);
         }
 
         return responseEntity;
