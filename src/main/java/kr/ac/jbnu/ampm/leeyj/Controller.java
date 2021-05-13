@@ -122,21 +122,6 @@ public class Controller {
                        testDBHashMap.replace(id, postValueArrayList); //값 수정.
                        responseEntity = new ResponseEntity<>(requestMap, HttpStatus.OK);
                    }
-//                }
-//
-//                for (String newKey : requestMap.keySet()) {
-//                    for (String i : testDBHashMap.keySet()) {
-//                            for (String cmp : testDBHashMap.get(i).get(0).keySet()) { //DB의 MAP의 키값.
-//                                if (newKey.equals((String) cmp)) {
-//                                    postValueArrayList = (ArrayList<Map<String,Object>>)requestMap;
-//                                    testDBHashMap.replace(id, postValueArrayList);
-//                                    break;
-//                                }
-//                                break;
-//                            }
-//                        break;
-//                    }
-//                    break;
                 }
             }
             else { //널 값이나 공백을 입력했을 때. id가 존재하지 않을 때.
