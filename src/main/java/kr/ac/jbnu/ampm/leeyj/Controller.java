@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import sun.awt.image.ImageWatched;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.*;
 import java.util.*;
 
 @RestController
@@ -109,23 +110,33 @@ public class Controller {
     @ResponseBody
     public ResponseEntity<?> putResponseEntity(HttpServletRequest request, @PathVariable String id, @RequestBody Map<String, Object> requestMap) {
         ResponseEntity<?> responseEntity = null;
-        ArrayList<Map<String, Object>> putValueArrayList = null;
+        ArrayList<Map<String, Object>> postValueArrayList = null;
 
         if (!testDBHashMap.isEmpty()) { //DB가 비어있지 않은 경우
             if (id != null && !id.equals("") && testDBHashMap.containsKey(id)) { //id를 입력했고 해당 id가 존재할때.
-                for (String newKey : requestMap.keySet()) {
-                    for (String i : testDBHashMap.keySet()) {
-                            for (String cmp : testDBHashMap.get(i).get(0).keySet()) { //DB의 MAP의 키값.
-                                if (newKey.equals((String) cmp)) {
-                                    postResponseEntity(request, id, requestMap);
-                                    responseEntity = new ResponseEntity<>(requestMap, HttpStatus.OK);
-                                    break;
-                                }
-                                break;
-                            }
-                        break;
-                    }
-                    break;
+                for(Map<String, Object> tmp : testDBHashMap.get(id)){ //DB의 MAP
+                   if(tmp.keySet().equals(requestMap.keySet())){ //키 값이 같으면
+                       postValueArrayList = testDBHashMap.get(id); //null인 postValueArrayList에 id값의 MAP을 넣고
+                       postValueArrayList.set(postValueArrayList.indexOf(tmp), requestMap); //값 변경//ArrayList.set : 특정 인덱스 값을 변경하는 메소드
+
+                       testDBHashMap.replace(id, postValueArrayList); //값 수정.
+                       responseEntity = new ResponseEntity<>(requestMap, HttpStatus.OK);
+                   }
+//                }
+//
+//                for (String newKey : requestMap.keySet()) {
+//                    for (String i : testDBHashMap.keySet()) {
+//                            for (String cmp : testDBHashMap.get(i).get(0).keySet()) { //DB의 MAP의 키값.
+//                                if (newKey.equals((String) cmp)) {
+//                                    postValueArrayList = (ArrayList<Map<String,Object>>)requestMap;
+//                                    testDBHashMap.replace(id, postValueArrayList);
+//                                    break;
+//                                }
+//                                break;
+//                            }
+//                        break;
+//                    }
+//                    break;
                 }
             }
             else { //널 값이나 공백을 입력했을 때. id가 존재하지 않을 때.
